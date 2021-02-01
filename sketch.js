@@ -13,7 +13,7 @@ let settings = {
 let topic_out = "myteam/servo"
 // topics that this sketch subscribes to
 let subs = [
-  'PinkTomate/light',  // # means subscribe to all subtopics
+  'PinkTomate/#',  // # means subscribe to all subtopics
   // 'luis/temperature/sensor',
 ]
 
@@ -48,10 +48,10 @@ function draw() {
   text("sending messages to " + topic_out, width / 2, 20)
   
   if(levels != undefined) {
-    let diameter = 100
+    // let diameter = 100
     let grey = ('#0C349E');
 
-    strokeWeight(2) // set the weight of our pen stroke
+    strokeWeight(1) // set the weight of our pen stroke
     noFill()
     
     push()
@@ -61,15 +61,29 @@ function draw() {
         stroke(grey)
         let angle = map(value, 0, 1024, 300, 0)
         for(var i = 0; i < width; i+=30) {
-          for(var j = 0; j < height; j+=60) {
+          for(var j = 0; j < height; j+=100) {
             ellipse(i, j, angle)
           }
         }
       }
     pop()
-  }
-      
-   
+    
+    push()
+    //  translate(width/2, height/2)
+      // go through all the sensor data we have received to visualize it
+      for( const [sensor, value] of Object.entries(levels) ) {
+        noStroke()
+        // strokeWeight(5)
+        fill('#0C349E')
+        let angle = map(value, 0, 1024, 200, 0)
+        for(var i = 0; i < width; i+=200) {
+          for(var j = 0; j < height; j+=300) { 
+            rect(i, j, angle/8, angle/2)
+          }
+        }
+      }
+    pop()
+  } 
   
     push()
       stroke(255)
@@ -78,42 +92,34 @@ function draw() {
       rect(0,0, windowWidth, windowHeight)
     pop()
 
-  push()
+    push()
       stroke('#C93E88')
-      strokeWeight(20)
-      //rectMode(CORNER)
-      rect(60,60, windowWidth/1.1, windowHeight/1.3)
+      strokeWeight(20) 
+      rectMode(CENTER);
+      rect(windowWidth/2,windowHeight/2, windowWidth/1.1, windowHeight/1.2)
     pop() 
   
-    push()
-      stroke(255)
-      strokeWeight(200)
-      rectMode(CORNER)
-      rect(300,200, 1, 100)
-    pop()
   
-//     push()
-//       noFill();
-//       stroke('#C93E88')
-//       strokeWeight(20)
-//       rectMode(CORNER)
-//       rect(70,70, 160, 410)
-//     pop()
-
-//     push()
-//       noFill();
-//       stroke('#C93E88')
-//       strokeWeight(1)
-//       rectMode(CORNER)
-//       rect(380,70, 380, 410)
-//     pop()
+      push()
+        textSize(12);
+        fill('#C93E88');
+        textFont('Roboto Mono');
+        text('This is a virtual visual connection between two people that cannot be physically together.', 60, 40); 
+      pop()
+  
+      push()
+        textSize(12);
+        fill('#C93E88');
+        textFont('Roboto Mono');
+        text('A project by Simo Vargas Paraschivoiu & Beatrice Neacsu', windowWidth-450,windowHeight-30); 
+      pop()
 }
 
 
-function keyPressed() {
-  let servo_angle = 270
-  mqttSendMessage( servo_angle )
-}
+// function keyPressed() {
+//   let servo_angle = 270
+//   mqttSendMessage( servo_angle )
+// }
 
 function onConnect() {
   console.log("connected to shiftr")
