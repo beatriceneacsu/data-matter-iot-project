@@ -18,7 +18,8 @@ let subs = [
 ]
 
 
-let levels = {}
+let levels1 = {}
+let levels2 = {}
 
 // initialize the mqtt websocket connection
 // see: https://www.eclipse.org/paho/index.php?page=clients/js/index.php
@@ -45,20 +46,15 @@ function setup() {
 
 function draw() {
   background(255)
-  text("sending messages to " + topic_out, width / 2, 20)
   
-  if(levels != undefined) {
-    // let diameter = 100
-    let grey = ('#0C349E');
+  if(levels1 != undefined) {
 
     strokeWeight(1) // set the weight of our pen stroke
     noFill()
     
     push()
-    //  translate(width/2, height/2)
-      // go through all the sensor data we have received to visualize it
-      for( const [sensor, value] of Object.entries(levels) ) {
-        stroke(grey)
+      for( const [sensor, value] of Object.entries(levels1) ) {
+        stroke('#0C349E')
         let angle = map(value, 0, 1024, 300, 0)
         for(var i = 0; i < width; i+=30) {
           for(var j = 0; j < height; j+=100) {
@@ -68,21 +64,25 @@ function draw() {
       }
     pop()
     
+  } 
+  
+    if(levels2 != undefined) {
+    
+    strokeWeight(1) // set the weight of our pen stroke
+    noFill()
+      
     push()
-    //  translate(width/2, height/2)
-      // go through all the sensor data we have received to visualize it
-      for( const [sensor, value] of Object.entries(levels) ) {
+      for( const [sensor, value] of Object.entries(levels2) ) {
         noStroke()
-        // strokeWeight(5)
         fill('#0C349E')
-        let angle = map(value, 0, 1024, 200, 0)
+        let angle = map(value, 0, 1024, 0, 70)
         for(var i = 0; i < width; i+=200) {
-          for(var j = 0; j < height; j+=300) { 
-            rect(i, j, angle/8, angle/2)
-          }
+            rectMode(CENTER)
+            rect(i, height/2, angle/4, angle*2)
         }
       }
     pop()
+    
   } 
   
     push()
@@ -101,17 +101,17 @@ function draw() {
   
   
       push()
-        textSize(12);
+        textSize(14);
         fill('#C93E88');
         textFont('Roboto Mono');
-        text('This is a virtual visual connection between two people that cannot be physically together.', 60, 40); 
+        text('This is a virtual visual connection between two people that cannot be physically together', 60, 40); 
       pop()
   
       push()
-        textSize(12);
+        textSize(14);
         fill('#C93E88');
         textFont('Roboto Mono');
-        text('A project by Simo Vargas Paraschivoiu & Beatrice Neacsu', windowWidth-450,windowHeight-30); 
+        text('A project by Simo Vargas Paraschivoiu & Beatrice Neacsu', windowWidth-520,windowHeight-30); 
       pop()
 }
 
@@ -139,7 +139,12 @@ function onConnectionLost(responseObject) {
 function onMessageArrived(message) {
   //console.log("received <- topic: " + message.destinationName + " payload:" + message.payloadString)
   // create a list with all the readings and their values so that we can do a simple visualization
-  levels[message.destinationName] = parseInt(message.payloadString)
+  // levels[message.destinationName] = parseInt(message.payloadString)
+  if(message.destinationName == 'PinkTomate/light') { 
+   levels1[message.destinationName] = parseInt(message.payloadString)
+  } else if(message.destinationName == 'PinkTomate/light2') { 
+   levels2[message.destinationName] = parseInt(message.payloadString)
+  }
 }
 
 
