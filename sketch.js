@@ -1,8 +1,8 @@
-// (c) 2021 studio derfunke
+// Source code: 2021 studio derfunke
 // for MDD
+// By PinkTomate team
 // https://editor.p5js.org/zilog/sketches/cEmHTFx0Z
 
-// credentials to connect to MQTT broker
 let settings = {
   broker: 'connectr.cloud.shiftr.io',
   username: 'connectr',
@@ -14,9 +14,7 @@ let topic_out = "myteam/servo"
 // topics that this sketch subscribes to
 let subs = [
   'PinkTomate/#',  // # means subscribe to all subtopics
-  // 'luis/temperature/sensor',
 ]
-
 
 let levels1 = {}
 let levels2 = {}
@@ -35,7 +33,6 @@ client.onMessageArrived = onMessageArrived
 
 function setup() {
   createCanvas(windowWidth, windowHeight)
-  // background(220)
   client.connect({
     onSuccess: onConnect,
     userName: settings.username,
@@ -47,9 +44,20 @@ function setup() {
 function draw() {
   background(255)
   
-  if(levels1 != undefined) {
+  if(Object.values(levels1 || levels2).length == 0) { 
+   push() 
+      textSize(42);
+      fill('#0C349E');
+      textFont('Big Shoulders Inline Text');
+      textAlign(CENTER)
+      textLeading(55);
+      text('Your PRENDS MA MAIN needs \n some love & attention to get back online', width/2, height/2); 
+     pop()
+    }
+  
+    if(levels1 != undefined) {
 
-    strokeWeight(1) // set the weight of our pen stroke
+    strokeWeight(1) 
     noFill()
     
     push()
@@ -68,7 +76,7 @@ function draw() {
   
     if(levels2 != undefined) {
     
-    strokeWeight(1) // set the weight of our pen stroke
+    strokeWeight(1) 
     noFill()
       
     push()
@@ -81,8 +89,7 @@ function draw() {
             rect(i, height/2, angle/4, angle*2)
         }
       }
-    pop()
-    
+    pop()    
   } 
   
     push()
@@ -97,8 +104,7 @@ function draw() {
       strokeWeight(20) 
       rectMode(CENTER);
       rect(windowWidth/2,windowHeight/2, windowWidth/1.1, windowHeight/1.2)
-    pop() 
-  
+    pop()  
   
       push()
         textSize(14);
@@ -114,12 +120,6 @@ function draw() {
         text('A project by Simo Vargas Paraschivoiu & Beatrice Neacsu', windowWidth-520,windowHeight-30); 
       pop()
 }
-
-
-// function keyPressed() {
-//   let servo_angle = 270
-//   mqttSendMessage( servo_angle )
-// }
 
 function onConnect() {
   console.log("connected to shiftr")
